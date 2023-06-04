@@ -1,61 +1,69 @@
-import { useState } from 'react';
-import classNames from 'classnames';
-import { ReactComponent as ReactLogo } from './assets/react.svg';
-import { ReactComponent as ViteLogo } from './assets/vite.svg';
-import { ReactComponent as TypescriptLogo } from './assets/typescript.svg';
-import { ReactComponent as ScssLogo } from './assets/scss.svg';
-import styles from './App.module.scss';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { ChakraProvider, LightMode } from '@chakra-ui/react';
+import { AuthProvider } from './AuthProvider';
+import ProtectedRoute from './components/ProtectedRoute';
+import Home from './components/Home';
+import Auth from './components/Auth';
 
-function App() {
-    const [count, setCount] = useState(0);
+const router = createBrowserRouter([
+    {
+        path: '/',
+        element: (
+            <ProtectedRoute screen="login">
+                {' '}
+                <Home />{' '}
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: '/login',
+        element: (
+            <ProtectedRoute screen="login">
+                {' '}
+                <Home />{' '}
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: '/signup',
+        element: (
+            <ProtectedRoute screen="signup">
+                {' '}
+                <Home />{' '}
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: '/forgot',
+        element: (
+            <ProtectedRoute screen="forgotpassword">
+                {' '}
+                <Home />{' '}
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: '/reset',
+        element: (
+            <ProtectedRoute screen="login">
+                {' '}
+                <Auth screen="resetpassword" />{' '}
+            </ProtectedRoute>
+        ),
+    },
+]);
 
-    return (
-        <div className={styles.App}>
-            <div>
-                <a href="https://vitejs.dev" target="_blank">
-                    <ViteLogo
-                        height="6em"
-                        width="6em"
-                        className={classNames(styles.logo)}
-                        title="Vite logo"
-                    />
-                </a>
-                <a href="https://reactjs.org" target="_blank">
-                    <ReactLogo
-                        height="6em"
-                        width="6em"
-                        className={classNames(styles.logo, styles.react)}
-                        title="React logo"
-                    />
-                </a>
-                <a href="https://www.typescriptlang.org/" target="_blank">
-                    <TypescriptLogo
-                        height="6em"
-                        width="6em"
-                        className={classNames(styles.logo, styles.ts)}
-                        title="Typescript logo"
-                    />
-                </a>
-                <a href="https://sass-lang.com/" target="_blank">
-                    <ScssLogo
-                        height="6em"
-                        width="6em"
-                        className={classNames(styles.logo, styles.scss)}
-                        title="SCSS logo"
-                    />
-                </a>
-            </div>
-            <div className={styles.card}>
-                <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
-                <p>
-                    Edit <code>src/App.tsx</code> and save to test HMR
-                </p>
-            </div>
-            <p className={styles['read-the-docs']}>
-                Click on the Vite and React logos to learn more
-            </p>
-        </div>
-    );
-}
-
-export default App;
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
+root.render(
+    <React.StrictMode>
+        <ChakraProvider>
+            <LightMode>
+                <AuthProvider>
+                    <RouterProvider router={router} />
+                </AuthProvider>
+            </LightMode>
+        </ChakraProvider>
+    </React.StrictMode>
+);
